@@ -6,6 +6,6 @@ class SMS(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     sender = db.Column(db.String(16), index=True)
-    receiver = db.Column(db.String(16))
+    receiver = db.Column(db.String(16), index=True)
     sms_text = db.Column(db.String(120))
     sent_at = db.Column(db.TIMESTAMP)
