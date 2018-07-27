@@ -7,7 +7,7 @@ class RedisProvider(object):
     """
     instance = None
 
-    @staticmethod
+    @classmethod
     def get_instance(cls):
         if cls.instance is None:
             cls.instance = RedisProvider()

@@ -6,8 +6,8 @@ logger = logging.getLogger('InboundSMS')
 RATELIMIT_THRESHOLD = 50
 
 
-class OutboundSMSValidator():
-    rclient = RedisProvider().get_instance()
+class OutboundSmsValidator():
+    rclient = RedisProvider.get_instance()
 
     def validate_input(data):
         if data.get('from') is None:

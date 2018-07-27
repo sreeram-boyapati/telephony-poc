@@ -13,7 +13,7 @@ from plivo.services.inbound.validator import InboundSmsValidator
 from plivo.services.outbound.validator import OutboundSmsValidator
 
 
-class InboundSMSService(object):
+class InboundSmsService(object):
     validator = InboundSmsValidator()
 
     def post_inbound_sms():

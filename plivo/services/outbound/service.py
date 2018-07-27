@@ -12,8 +12,9 @@ from plivo.providers.redis import RedisProvider
 from plivo.services.outbound.validator import OutboundSmsValidator
 
 
-class OutboundSMSService(object):
+class OutboundSmsService(object):
     validator = OutboundSmsValidator()
+    rclient = RedisProvider.get_instance()
 
     def post_outbound_sms():
         data = request.data
@@ -59,7 +60,6 @@ class OutboundSMSService(object):
             return jsonify(msg), 400
 
     def check_rate_limit():
-        instance = RedisProvider().get_instance()
         conn = instance.get_conn()
         total_seconds = timedelta(hours=1).total_seconds()
         current_hour = datetime.now().hour
@@ -77,4 +77,3 @@ class OutboundSMSService(object):
                     'message': '',
                     'error': 'limit reached for from ' + str(sender),
                 }
-
