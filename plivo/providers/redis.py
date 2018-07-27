@@ -1,6 +1,5 @@
+import os
 import redis
-
-from plivo.config import ConfigProvider
 
 
 class RedisProvider(object):
@@ -15,8 +14,7 @@ class RedisProvider(object):
         return cls.instance
 
     def get_conn(self):
-        configs = ConfigProvider().get_configs()
         return redis.StrictRedis(
-                host=configs['REDIS_HOST'],
-                port=configs['REDIS_PORT'],
-                db=configs['REDIS_DB'])
+                host=os.environ.get('REDIS_HOST'),
+                port=os.environ.get('REDIS_PORT'),
+                db=os.environ.get('REDIS_DB'))

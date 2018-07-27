@@ -5,4 +5,4 @@ flask-migrate
 flask-script
 configparser
 flask-wtf
-redis-py==2.10.6
+redis

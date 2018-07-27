@@ -16,7 +16,8 @@ def send_inbound_sms():
     service = InboundSmsService()
 
     if request.method == 'POST':
-        service.post_inbound_sms()
+        json_msg, status_code = service.post_inbound_sms()
+        return json_msg, status_code
 
 
 @app.route('/outbound/sms', methods=['POST'])
@@ -24,4 +25,5 @@ def send_outbound_sms():
     service = OutboundSmsService()
 
     if request.method == 'POST':
-        service.post_outbound_sms()
+        json_msg, status_code = service.post_outbound_sms()
+        return json_msg, status_code
