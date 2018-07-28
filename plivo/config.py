@@ -11,6 +11,7 @@ class AppConfig(object):
     WTF_CSRF_ENABLED = False
     BASIC_AUTH_USERNAME = os.environ.get('BASIC_AUTH_USERNAME')
     BASIC_AUTH_PASSWORD = os.environ.get('BASIC_AUTH_PASSWORD')
+    SERVER_NAME = 'telephony-poc.herokuapp.com'
 
 
 class DebugAppConfig(object):
