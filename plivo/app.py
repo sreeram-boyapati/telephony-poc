@@ -15,10 +15,12 @@ APP_MODE = os.environ.get('APP_MODE', 'dev')
 basic_auth = BasicAuth(app)
 
 if APP_MODE == 'dev':
-    app.debug = True
+    app.config['DEBUG'] = True
+    app.config['TESTING'] = False
     app.config.from_object(DebugAppConfig)
 elif APP_MODE == 'prod':
-    app.debug = False
+    app.config['DEBUG'] = False
+    app.config['TESTING'] = False
     app.config.from_object(AppConfig)
 
 db = SQLAlchemy(app)

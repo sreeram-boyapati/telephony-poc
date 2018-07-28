@@ -11,3 +11,6 @@ class SMS(db.Model):
     receiver = db.Column(db.String(16), index=True)
     sms_text = db.Column(db.String(120))
     sent_at = db.Column(db.DateTime, default=datetime.now)
+
+    def __repr__(self):
+        return "SMS ID: " + str(self.id)
