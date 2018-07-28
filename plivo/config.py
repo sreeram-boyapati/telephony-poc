@@ -1,5 +1,4 @@
 import os
-import configparser
 
 from os.path import join
 

@@ -6,3 +6,4 @@ flask-script
 configparser
 flask-wtf
 redis
+Flask-BasicAuth

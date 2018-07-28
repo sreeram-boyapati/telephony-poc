@@ -1,17 +1,34 @@
 import json
+import os
 
 from datetime import datetime
-from flask import request
+
+from flask import request, jsonify
+from flask_basicauth import BasicAuth
 
 from plivo.app import app
-
 from plivo.models.sms import SMS
-
 from plivo.services.inbound.service import InboundSmsService
 from plivo.services.outbound.service import OutboundSmsService
 
 
+app.config['BASIC_AUTH_USERNAME'] = os.environ.get('BASIC_AUTH_USERNAME')
+app.config['BASIC_AUTH_PASSWORD'] = os.environ.get('BASIC_AUTH_PASSWORD')
+
+basic_auth = BasicAuth(app)
+
+
+@app.route('/', methods=['GET'])
+def hello_world():
+    msg = {
+        'message': 'Welcome to plivo',
+        'error': ''
+    }
+    return jsonify(msg), 200
+
+
 @app.route('/inbound/sms', methods=['POST'])
+@basic_auth.required
 def send_inbound_sms():
     service = InboundSmsService()
 
@@ -21,6 +38,7 @@ def send_inbound_sms():
 
 
 @app.route('/outbound/sms', methods=['POST'])
+@basic_auth.required
 def send_outbound_sms():
     service = OutboundSmsService()
 

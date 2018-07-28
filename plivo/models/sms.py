@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from plivo.app import db
 
 
@@ -8,4 +10,4 @@ class SMS(db.Model):
     sender = db.Column(db.String(16), index=True)
     receiver = db.Column(db.String(16), index=True)
     sms_text = db.Column(db.String(120))
-    sent_at = db.Column(db.TIMESTAMP)
+    sent_at = db.Column(db.DateTime, default=datetime.now)

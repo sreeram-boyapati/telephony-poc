@@ -1,2 +1,16 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+
 [requires]
 python_version = "2.7"
+
+[packages]
+flask = "*"
+sqlalchemy = "*"
+flask-sqlalchemy = "*"
+flask-migrate = "*"
+flask-script = "*"
+flask-wtf = "*"
+redis = "*"
+Flask-BasicAuth = "*"

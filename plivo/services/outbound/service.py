@@ -41,7 +41,7 @@ class OutboundSmsService(object):
         success, msg = check_rate_limit(sender)
         # Raise bad request
         if not success:
-            return jsonify(msg), 400
+            return jsonify(msg), 429
 
         try:
             sms = SMS(sender=sender, receiver=receiver, sms_text=sms_text)
