@@ -1,9 +1,0 @@
-flask
-sqlalchemy
-flask-sqlalchemy
-flask-migrate
-flask-script
-configparser
-flask-wtf
-redis
-Flask-BasicAuth

@@ -4,18 +4,12 @@ import os
 from datetime import datetime
 
 from flask import request, jsonify
-from flask_basicauth import BasicAuth
 
-from plivo.app import app
+from plivo.app import app, basic_auth
 from plivo.models.sms import SMS
 from plivo.services.inbound.service import InboundSmsService
 from plivo.services.outbound.service import OutboundSmsService
 
-
-app.config['BASIC_AUTH_USERNAME'] = os.environ.get('BASIC_AUTH_USERNAME')
-app.config['BASIC_AUTH_PASSWORD'] = os.environ.get('BASIC_AUTH_PASSWORD')
-
-basic_auth = BasicAuth(app)
 
 
 @app.route('/', methods=['GET'])
