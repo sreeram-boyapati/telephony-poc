@@ -1,0 +1,9 @@
+flask
+sqlalchemy
+flask-sqlalchemy
+flask-migrate
+flask-script
+flask-wtf
+redis
+Flask-BasicAuth
+pytest
