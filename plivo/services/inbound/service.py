@@ -1,4 +1,4 @@
-import random
+import json
 import string
 
 from datetime import datetime, timedelta
@@ -16,10 +16,10 @@ from plivo.services.outbound.validator import OutboundSmsValidator
 class InboundSmsService(object):
     validator = InboundSmsValidator()
 
-    def post_inbound_sms():
-        data = request.data
+    def post_inbound_sms(self):
+        data = json.loads(request.data)
 
-        success, msg = validator.validate_input(data)
+        success, msg = self.validator.validate_input(data)
         # Raise bad request
         if not success:
             return jsonify(msg), 400
@@ -28,7 +28,7 @@ class InboundSmsService(object):
         receiver = data.get('to')
         sms_text = data.get('text')
 
-        success, msg = validator.validate_inbound_sms(sender, receiver, sms_text)
+        success, msg = self.validator.validate_inbound_sms(sender, receiver, sms_text)
         # Raise bad request
         if not success:
             return jsonify(msg), 400
@@ -61,6 +61,3 @@ class InboundSmsService(object):
                 'error': 'unknown failure'
             }
             return jsonify(msg), 400
-
-    def generate_random_string(length):
-        return ''.join(random.choice(string.lowercase) for i in range(length))

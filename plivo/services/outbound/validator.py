@@ -9,7 +9,7 @@ RATELIMIT_THRESHOLD = 50
 class OutboundSmsValidator():
     rclient = RedisProvider.get_instance()
 
-    def validate_input(data):
+    def validate_input(self, data):
         if data.get('from') is None:
             return False, {
                 'message': '',
@@ -30,7 +30,7 @@ class OutboundSmsValidator():
 
         return True, dict()
 
-    def validate_inbound_sms(sender, receiver, sms_text):
+    def validate_inbound_sms(self, sender, receiver, sms_text):
         # validate lengths
         if not 6 <= len(sender) <= 16:
             return False, {
@@ -50,7 +50,7 @@ class OutboundSmsValidator():
                 'error': 'text parameter is invalid'
             }
 
-    def validate_for_stop_words(sender, receiver):
+    def validate_for_stop_words(self, sender, receiver):
         """if the stop word for the number is cached
         """
         conn = rclient.get_conn()

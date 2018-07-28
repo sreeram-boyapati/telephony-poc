@@ -16,10 +16,10 @@ class OutboundSmsService(object):
     validator = OutboundSmsValidator()
     rclient = RedisProvider.get_instance()
 
-    def post_outbound_sms():
+    def post_outbound_sms(self):
         data = request.data
 
-        success, msg = validator.validate_input(data)
+        success, msg = self.validator.validate_input(data)
         # Raise bad request
         if not success:
             return jsonify(msg), 400
@@ -28,17 +28,17 @@ class OutboundSmsService(object):
         receiver = data.get('to')
         sms_text = data.get('text')
 
-        success, msg = validator.validate_inbound_sms(sender, receiver, sms_text)
+        success, msg = self.validator.validate_inbound_sms(sender, receiver, sms_text)
         # Raise bad request
         if not success:
             return jsonify(msg), 400
 
-        success, msg = validator.validate_for_stop_words(sender, receiver)
+        success, msg = self.validator.validate_for_stop_words(sender, receiver)
         # Raise bad request
         if not success:
             return jsonify(msg), 400
 
-        success, msg = check_rate_limit(sender)
+        success, msg = self.check_rate_limit(sender)
         # Raise bad request
         if not success:
             return jsonify(msg), 429
@@ -59,7 +59,7 @@ class OutboundSmsService(object):
             }
             return jsonify(msg), 400
 
-    def check_rate_limit():
+    def check_rate_limit(self):
         conn = instance.get_conn()
         total_seconds = timedelta(hours=1).total_seconds()
         current_hour = datetime.now().hour

@@ -6,7 +6,7 @@ RATELIMIT_THRESHOLD = 50
 
 class InboundSmsValidator():
 
-    def validate_input(data):
+    def validate_input(self, data):
         if data.get('sender') is None:
             return False, {
                 'message': '',
@@ -28,7 +28,7 @@ class InboundSmsValidator():
         return True, dict()
 
 
-    def validate_inbound_sms(sender, receiver, sms_text):
+    def validate_inbound_sms(self, sender, receiver, sms_text):
         # validate lengths
         if not 6 <= len(sender) <= 16:
             return False, {
