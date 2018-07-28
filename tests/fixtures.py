@@ -27,6 +27,7 @@ def test_client():
         client.testing = True
         db.create_all()
         yield client
+        # Teardown
         db.drop_all()
 
 
@@ -35,6 +36,7 @@ def redis_client():
     instance = RedisProvider.get_instance()
     conn = instance.get_conn()
     yield conn
+    # Teardown
     clear_cache(conn, "ratelimit*")
     clear_cache(conn, "stop*")
 
@@ -45,5 +47,3 @@ def clear_cache(conn, pattern):
         cursor, keys = conn.scan(cursor=cursor, match=pattern, count=5000)
         if keys:
             conn.delete(*keys)
-
-    return True

@@ -22,6 +22,12 @@ class OutboundSmsValidator():
                 'error': 'to input is missing'
             }
 
+        if data.get('from') == data.get('to'):
+            return False, {
+                'message': '',
+                'error': 'from/to cannot be same'
+            }
+
         if data.get('text') is None:
             return False, {
                 'message': '',

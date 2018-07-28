@@ -1,6 +1,7 @@
 import json
 import random
 import string
+import traceback
 
 from datetime import datetime, timedelta
 
@@ -56,11 +57,13 @@ class OutboundSmsService(object):
             }
 
             resp = jsonify(msg)
-            resp.add_headers('X-Rate-Limit-Remaining', rate_counter)
-            resp.add_headers('X-Rate-Limit-Threshold', '50')
+            resp.headers.extend({'X-Rate-Limit-Value': str(rate_counter)})
+            resp.headers.extend({'X-Rate-Limit-Threshold': '50'})
 
             return resp, 200
         except Exception:
+            tb = traceback.format_exc()
+            print tb
             msg = {
                 'message': '',
                 'error': 'unknown failure'
