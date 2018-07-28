@@ -8,7 +8,7 @@ from flask import request, jsonify
 from plivo.app import db
 
 from plivo.models.sms import SMS
-from plivo.providers.redis import RedisProvider
+from plivo.providers.cache import RedisProvider
 from plivo.services.inbound.validator import InboundSmsValidator
 from plivo.services.outbound.validator import OutboundSmsValidator
 
@@ -41,18 +41,17 @@ class InboundSmsService(object):
                 'message': 'inbound sms is ok', 'error': ''
             }
             # TODO use redis pipelining
-            instance = RedisProvider().get_instance()
+            instance = RedisProvider.get_instance()
             conn = instance.get_conn()
 
-            if ((text == 'STOP') or
-                (text == 'STOP\r') or
-                (text == 'STOP\n') or
-                (text == 'STOP\r\n')):
+            if ((sms_text == 'STOP') or
+                (sms_text == 'STOP\r') or
+                (sms_text == 'STOP\n') or
+                (sms_text == 'STOP\r\n')):
                 # there can be multiple pairs with sender-receiver
-                total_seconds = timedelta(hours=4).total_seconds()
-
-                key = 'stop:' + str(sender) + ':' + str(receiver)
-                conn.setex(key, total_seconds, 1)
+                total_seconds = int(timedelta(hours=4).total_seconds())
+                key = 'stop:{}:{}'.format(str(sender), str(receiver))
+                conn.setex(key, total_seconds, 'stopped')
 
             return jsonify(msg), 200
         except Exception:
@@ -60,4 +59,5 @@ class InboundSmsService(object):
                 'message': '',
                 'error': 'unknown failure'
             }
-            return jsonify(msg), 400
+
+            return jsonify(msg), 500

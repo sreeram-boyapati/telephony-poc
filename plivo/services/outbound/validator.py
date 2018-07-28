@@ -1,6 +1,6 @@
 import logging
 
-from plivo.providers.redis import RedisProvider
+from plivo.providers.cache import RedisProvider
 
 logger = logging.getLogger('InboundSMS')
 RATELIMIT_THRESHOLD = 50
@@ -30,7 +30,7 @@ class OutboundSmsValidator():
 
         return True, dict()
 
-    def validate_inbound_sms(self, sender, receiver, sms_text):
+    def validate_outbound_sms(self, sender, receiver, sms_text):
         # validate lengths
         if not 6 <= len(sender) <= 16:
             return False, {
@@ -50,15 +50,18 @@ class OutboundSmsValidator():
                 'error': 'text parameter is invalid'
             }
 
+        return True, dict()
+
     def validate_for_stop_words(self, sender, receiver):
         """if the stop word for the number is cached
         """
-        conn = rclient.get_conn()
-        value = conn.get('stop:' + str(receiver) + ':' + str(sender))
+        conn = self.rclient.get_conn()
+        key = 'stop:{}:{}'.format(receiver, sender)
+        value = conn.get(key)
         if value:
-            return True, dict()
-        else:
             return False, {
                 'message': '',
-                'error': 'unknown failure',
+                'error': 'sms from `from` and `to` to blocked by STOP request',
             }
+        else:
+            return True, dict()

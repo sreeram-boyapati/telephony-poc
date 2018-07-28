@@ -17,8 +17,8 @@ class RedisProvider(object):
         APP_MODE = os.environ.get('APP_MODE', 'dev')
         if APP_MODE == 'dev':
             return redis.StrictRedis(
-                    host=os.environ.get('REDIS_HOST'),
-                    port=os.environ.get('REDIS_PORT'),
-                    db=os.environ.get('REDIS_DB'))
+                    host='localhost',
+                    port='6379',
+                    db='0')
         else:
             return redis.StrictRedis.from_url(os.environ.get('REDIS_URL'))

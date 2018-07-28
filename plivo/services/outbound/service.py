@@ -1,3 +1,4 @@
+import json
 import random
 import string
 
@@ -8,7 +9,7 @@ from flask import request, jsonify
 from plivo.app import db
 
 from plivo.models.sms import SMS
-from plivo.providers.redis import RedisProvider
+from plivo.providers.cache import RedisProvider
 from plivo.services.outbound.validator import OutboundSmsValidator
 
 
@@ -17,7 +18,7 @@ class OutboundSmsService(object):
     rclient = RedisProvider.get_instance()
 
     def post_outbound_sms(self):
-        data = request.data
+        data = json.loads(request.data)
 
         success, msg = self.validator.validate_input(data)
         # Raise bad request
@@ -28,7 +29,7 @@ class OutboundSmsService(object):
         receiver = data.get('to')
         sms_text = data.get('text')
 
-        success, msg = self.validator.validate_inbound_sms(sender, receiver, sms_text)
+        success, msg = self.validator.validate_outbound_sms(sender, receiver, sms_text)
         # Raise bad request
         if not success:
             return jsonify(msg), 400
@@ -39,9 +40,12 @@ class OutboundSmsService(object):
             return jsonify(msg), 400
 
         success, msg = self.check_rate_limit(sender)
+        rate_counter = 0
         # Raise bad request
         if not success:
             return jsonify(msg), 429
+        else:
+            rate_counter = msg['current_rate']
 
         try:
             sms = SMS(sender=sender, receiver=receiver, sms_text=sms_text)
@@ -51,27 +55,37 @@ class OutboundSmsService(object):
                 'message': 'outbound sms is ok', 'error': ''
             }
 
-            return jsonify(msg), 200
+            resp = jsonify(msg)
+            resp.add_headers('X-Rate-Limit-Remaining', rate_counter)
+            resp.add_headers('X-Rate-Limit-Threshold', '50')
+
+            return resp, 200
         except Exception:
             msg = {
                 'message': '',
                 'error': 'unknown failure'
             }
-            return jsonify(msg), 400
+            return jsonify(msg), 500
 
-    def check_rate_limit(self):
-        conn = instance.get_conn()
-        total_seconds = timedelta(hours=1).total_seconds()
-        current_hour = datetime.now().hour
-        key = 'from:' + str(sender) + ':' + current_hour
+    def check_rate_limit(self, sender):
+        conn = self.rclient.get_conn()
+        total_seconds = int(timedelta(hours=1).total_seconds())
+        current_hour = int(datetime.now().hour)
+        key = 'ratelimit:' + str(sender) + ':' + str(current_hour)
         counter = conn.get(key)
-        if value is None:
+        if counter is None:
             conn.setex(key, total_seconds, 1)
+            return True, {
+                'current_rate': 1,
+            }
         else:
             counter = int(counter)
+            # TODO implement locks for concurrency
             if counter < 50:
                 conn.incr(key)
-                return True, {}
+                return True, {
+                    'current_rate': counter+1,
+                }
             else:
                 return False, {
                     'message': '',

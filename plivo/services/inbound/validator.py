@@ -7,19 +7,25 @@ RATELIMIT_THRESHOLD = 50
 class InboundSmsValidator():
 
     def validate_input(self, data):
-        if data.get('sender') is None:
+        if data.get('from') is None:
             return False, {
                 'message': '',
                 'error': 'from input is missing'
             }
 
-        if data.get('receiver') is None:
+        if data.get('to') is None:
             return False, {
                 'message': '',
                 'error': 'to input is missing'
             }
 
-        if data.get('sms_text') is None:
+        if data.get('from') == data.get('to'):
+            return False, {
+                'message': '',
+                'error': 'from/to cannot be same'
+            }
+
+        if data.get('text') is None:
             return False, {
                 'message': '',
                 'error': 'text input is missing'
@@ -47,3 +53,5 @@ class InboundSmsValidator():
                 'message': '',
                 'error': 'text input is invalid'
             }
+
+        return True, dict()
