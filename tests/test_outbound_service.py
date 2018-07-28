@@ -60,6 +60,19 @@ def test_success_resp(client, cache):
             assert header[1] == '2'
 
 
+def test_invalid_param(client, cache):
+    resp = client.post('/outbound/sms', headers={
+        'Authorization': 'Basic dGVzdDp0ZXN0',
+        'Content-Type': 'application/json'
+    }, data=json.dumps({
+        'from': '91987654322',
+        'to': '91199123123123123213123234324',
+        'text': 'asdas'
+    }))
+
+    assert resp.status_code == 400
+
+
 def test_missing_param(client, cache):
     resp = client.post('/outbound/sms', headers={
         'Authorization': 'Basic dGVzdDp0ZXN0',

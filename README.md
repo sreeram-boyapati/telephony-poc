@@ -32,8 +32,10 @@ Basic Auth username and password are `plivo`and `plivo` respectively
 ### Rate Limiting
 Rate limiting is done using redis basic rate limiting pattern
 For outbound sms, Please check the response headers
-X-Rate-Limit-Threshold → 50
-X-Rate-Limit-Value → 1
+
+`X-Rate-Limit-Threshold → 50`
+
+`X-Rate-Limit-Value → 1`
 
 ### Running Migrations in Heroku
 1. Run command `heroku run migrate`
