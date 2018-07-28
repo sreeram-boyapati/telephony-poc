@@ -1,13 +1,26 @@
 import pytest
 
+from os.path import join
+
 from plivo.app import app, db
-from plivo import routes
+from plivo import routes, ROOT_DIR
 from plivo.providers.cache import RedisProvider
+
+
+class TestAppConfig(object):
+    SQLALCHEMY_DATABASE_URI = "sqlite:////" + join(ROOT_DIR, 'test_sqlite.db')
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SECRET_KEY = 'thisismylife'
+    WTF_CSRF_ENABLED = False
+    BASIC_AUTH_USERNAME = 'test'
+    BASIC_AUTH_PASSWORD = 'test'
 
 
 @pytest.fixture
 def test_client():
+    app.config.from_object(TestAppConfig)
     app.config['TESTING'] = True
+    app.config['DEBUG'] = False
     # Clean all
     with app.app_context():
         client = app.test_client()
