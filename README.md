@@ -26,8 +26,8 @@ Basic Auth username and password are `plivo`and `plivo` respectively
 
 ### ROUTES
 1. HOME URL `https://telephony-poc.herokuapp.com`
-2. INBOUND SMS `https://telephony-poc.herokuapp.com`
-3. OUTBOUND SMS `https://telephony-poc.herokuapp.com`
+2. INBOUND SMS POST `https://telephony-poc.herokuapp.com/inbound/sms`
+3. OUTBOUND SMS POST `https://telephony-poc.herokuapp.com/outbound/sms`
 
 ### Rate Limiting
 Rate limiting is done using redis basic rate limiting pattern
